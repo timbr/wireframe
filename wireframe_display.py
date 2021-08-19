@@ -8,6 +8,12 @@ key_to_function = {
     pygame.K_UP: (lambda x: x.translateAll('y', -10)),
     pygame.K_EQUALS: (lambda x: x.scaleAll(1.25)),
     pygame.K_MINUS: (lambda x: x.scaleAll(0.8)),
+    pygame.K_q: (lambda x: x.rotateAll('X', 0.1)),
+    pygame.K_w: (lambda x: x.rotateAll('X', -0.1)),
+    pygame.K_a: (lambda x: x.rotateAll('Y', 0.1)),
+    pygame.K_s: (lambda x: x.rotateAll('Y', -0.1)),
+    pygame.K_z: (lambda x: x.rotateAll('Z', 0.1)),
+    pygame.K_x: (lambda x: x.rotateAll('Z', -0.1)),
     }
 
 class ProjectionViewer:
@@ -41,6 +47,8 @@ class ProjectionViewer:
                    
             self.display()
             pygame.display.flip()
+        pygame.display.quit()
+        pygame.quit()
     
     def addWireframe(self, name, wireframe):
         """ Add a named wireframe object. """
@@ -74,6 +82,15 @@ class ProjectionViewer:
         
         for wireframe in self.wireframes.values():
             wireframe.scale(centre_x, centre_y, scale)
+    
+    def rotateAll(self, axis, theta):
+        """ Rotate all wireframes about their centre, along a given axis by a given angle. """
+        
+        rotateFunction = 'rotate' + axis
+        
+        for wireframe in self.wireframes.values():
+            centre = wireframe.findCentre()
+            getattr(wireframe, rotateFunction)(centre, theta)
             
  
  

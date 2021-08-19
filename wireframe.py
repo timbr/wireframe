@@ -1,5 +1,7 @@
 # from https://www.petercollingridge.co.uk/tutorials/3d/pygame/nodes-and-edges/
 
+import math
+
 class Node:
     def __init__(self, coordinates):
         self.x = coordinates[0]
@@ -38,6 +40,46 @@ class Wireframe:
             node.x = centre_x + scale * (node.x - centre_x)
             node.y = centre_y + scale * (node.y - centre_y)
             node.z *= scale
+    
+    def findCentre(self):
+        """ Find the centre of the wireframe. """
+        
+        num_nodes = len(self.nodes)
+        meanX = sum([node.x for node in self.nodes]) / num_nodes
+        meanY = sum([node.y for node in self.nodes]) / num_nodes
+        meanZ = sum([node.z for node in self.nodes]) / num_nodes
+        
+        return (meanX, meanY, meanZ)
+    
+    def rotateX(self, centre, radians):
+        (cx, cy, cz) = centre
+        for node in self.nodes:
+            y = node.y - cy
+            z = node.z - cz
+            d =  math.hypot(y, z)
+            theta = math.atan2(y, z) + radians
+            node.z = cz + d * math.cos(theta)
+            node.y = cy + d * math.sin(theta)
+    
+    def rotateY(self, centre, radians):
+        (cx, cy, cz) = centre
+        for node in self.nodes:
+            x = node.x - cx
+            z = node.z - cz
+            d = math.hypot(x, z)
+            theta = math.atan2(x, z) + radians
+            node.z = cz + d * math.cos(theta)
+            node.x = cx + d * math.sin(theta)
+    
+    def rotateZ(self, centre, radians):
+        (cx, cy, cz) = centre
+        for node in self.nodes:
+            x = node.x - cx
+            y = node.y - cy
+            d = math.hypot(y, x)
+            theta = math.atan2(y, x) + radians
+            node.x = cx + d * math.cos(theta)
+            node.y = cy + d * math.sin(theta)
     
     def outputNodes(self):
         print('\n --- Nodes --- ')
